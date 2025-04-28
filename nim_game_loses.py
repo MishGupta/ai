@@ -1,41 +1,62 @@
-import random
+def minimax(stones, is_computer_turn):
+    if stones == 0:
+        return 1 if not is_computer_turn else -1
 
-def nim_game():
-    print("Welcome to the Nim Game!")
+    if is_computer_turn:
+        best_score = float('inf')  # <-- NOTE: minimized instead of maximized
+        for move in [1, 2, 3]:
+            if stones >= move:
+                score = minimax(stones - move, False)
+                best_score = min(best_score, score)
+        return best_score
+    else:
+        best_score = -float('inf')  # player plays optimally (maximize)
+        for move in [1, 2, 3]:
+            if stones >= move:
+                score = minimax(stones - move, True)
+                best_score = max(best_score, score)
+        return best_score
 
-    stones = int(input("Enter the initial number of stones: "))
-    player = input("Enter your name: ")
+def worst_move(stones):
+    worst_score = float('inf')
+    move_chosen = 1
+    for move in [1, 2, 3]:
+        if stones >= move:
+            score = minimax(stones - move, False)
+            if score < worst_score:
+                worst_score = score
+                move_chosen = move
+    return move_chosen
 
-    current_player = player  # You start first
+def play_nim():
+    stones = int(input("Enter initial number of stones (>= 1): "))
+    turn = input("Who plays first? (computer/player): ").strip().lower()
+
+    if turn not in ["computer", "player"]:
+        print("Invalid choice.")
+        return
+
+    is_computer_turn = (turn == "computer")
 
     while stones > 0:
-        print(f"\nCurrent stones: {stones}")
+        print(f"\nStones left: {stones}")
 
-        if current_player == player:
-            try:
-                move = int(input(f"{player}, remove 1, 2, or 3 stones: "))
-                if move not in [1, 2, 3] or move > stones:
-                    print("Invalid move!")
-                    continue
-            except ValueError:
-                print("Please enter a valid number.")
-                continue
+        if is_computer_turn:
+            move = worst_move(stones)
+            print(f"Computer removes {move} stone(s).")
         else:
-            # BAD move: computer plays randomly, not optimally
-            move = random.choice([i for i in [1, 2, 3] if i <= stones])
-            print(f"Computer removes {move} stones.")
+            move = int(input("How many stones do you want to remove (1-3)? "))
+            if move not in [1, 2, 3] or move > stones:
+                print("Invalid move. Try again.")
+                continue
 
         stones -= move
+        is_computer_turn = not is_computer_turn
 
-        if stones == 0:
-            if current_player == player:
-                print(f"\n{player} wins!")
-            else:
-                print("\nComputer wins!")
-            break
-
-        # Switch turn
-        current_player = "Computer" if current_player == player else player
+    if not is_computer_turn:
+        print("\nComputer wins!")
+    else:
+        print("\nYou win!")
 
 if __name__ == "__main__":
-    nim_game()
+    play_nim()
