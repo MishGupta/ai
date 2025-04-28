@@ -1,18 +1,17 @@
 import re
+import os
 import nltk
 from nltk.corpus import stopwords
 from nltk.tokenize import word_tokenize
 from textblob import TextBlob
 
+# Download necessary NLTK data
 try:
-    nltk.data.find('tokenizers/punkt')
-except LookupError:
     nltk.download('punkt')
-
-try:
-    nltk.data.find('corpora/stopwords')
-except LookupError:
     nltk.download('stopwords')
+    nltk.download('punkt_tab')
+except:
+    print("Note: Make sure you have an internet connection for downloading NLTK resources")
 
 def clean_text(text):
     text = re.sub(r'[^a-zA-Z\s]', '', text)
@@ -27,8 +26,15 @@ def correct_spelling(tokens):
     return corrected
 
 def main():
-    with open('textfile.txt', 'r') as file:
-        text = file.read()
+    # Sample text if file not found
+    sample_text = "This is a sample text for tokenization. It contains multiple sentences with various words to process."
+    
+    try:
+        with open('tech1.txt', 'r') as file:
+            text = file.read()
+    except FileNotFoundError:
+        print("Warning: 'tech.txt' not found. Using sample text instead.")
+        text = sample_text
 
     cleaned_text = clean_text(text)
     tokens = word_tokenize(cleaned_text)
