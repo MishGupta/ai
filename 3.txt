@@ -1,0 +1,444 @@
+#tanh
+import numpy as np
+
+def tanh(x):
+    return np.tanh(x)
+
+def tanh_derivative(x):
+    return 1 - np.tanh(x)**2
+
+def main():
+    N = int(input("Enter number of inputs: "))
+    X = np.random.randint(0, 2, size=(N, 1))
+    Y = np.random.randint(0, 2, size=(1, 1))  # Expected output
+
+    # Small random initialization
+    W1 = np.random.randn(4, N) * 0.01
+    b1 = np.zeros((4, 1))
+    W2 = np.random.randn(3, 4) * 0.01
+    b2 = np.zeros((3, 1))
+    W3 = np.random.randn(1, 3) * 0.01
+    b3 = np.zeros((1, 1))
+
+    learning_rate = 0.1
+
+    for epoch in range(1000):
+        # Forward pass
+        Z1 = np.dot(W1, X) + b1
+        A1 = tanh(Z1)
+
+        Z2 = np.dot(W2, A1) + b2
+        A2 = tanh(Z2)
+
+        Z3 = np.dot(W3, A2) + b3
+        A3 = tanh(Z3)
+
+        # Loss (optional for monitoring)
+        loss = np.mean((A3 - Y)**2)
+
+        # Backward pass
+        dZ3 = (A3 - Y) * tanh_derivative(Z3)
+        dW3 = np.dot(dZ3, A2.T)
+        db3 = dZ3
+
+        dZ2 = np.dot(W3.T, dZ3) * tanh_derivative(Z2)
+        dW2 = np.dot(dZ2, A1.T)
+        db2 = dZ2
+
+        dZ1 = np.dot(W2.T, dZ2) * tanh_derivative(Z1)
+        dW1 = np.dot(dZ1, X.T)
+        db1 = dZ1
+
+        # Update weights
+        W3 -= learning_rate * dW3
+        b3 -= learning_rate * db3
+        W2 -= learning_rate * dW2
+        b2 -= learning_rate * db2
+        W1 -= learning_rate * dW1
+        b1 -= learning_rate * db1
+
+        # (Optional) Print loss every 100 epochs
+        if epoch % 100 == 0:
+            print(f"Epoch {epoch}, Loss: {loss:.4f}")
+
+    print("\nFinal Prediction:", A3)
+    print("Final Weights and Biases:")
+    print("W1:", W1)
+    print("b1:", b1)
+    print("W2:", W2)
+    print("b2:", b2)
+    print("W3:", W3)
+    print("b3:", b3)
+
+if __name__ == "__main__":
+    main()
+
+#relu
+import numpy as np
+
+def relu(x):
+    return np.maximum(0, x)
+
+def relu_derivative(x):
+    return np.where(x > 0, 1, 0)
+
+def main():
+    N = int(input("Enter number of inputs: "))
+    X = np.random.randint(0, 2, size=(N, 1))
+    Y = np.random.randint(0, 2, size=(1, 1))  # Expected output
+
+    W1 = np.random.rand(4, N)
+    b1 = np.random.rand(4, 1)
+    W2 = np.random.rand(3, 4)
+    b2 = np.random.rand(3, 1)
+    W3 = np.random.rand(1, 3)
+    b3 = np.random.rand(1, 1)
+
+    learning_rate = 0.1
+
+    for epoch in range(1000):
+        # Forward pass
+        Z1 = np.dot(W1, X) + b1
+        A1 = relu(Z1)
+
+        Z2 = np.dot(W2, A1) + b2
+        A2 = relu(Z2)
+
+        Z3 = np.dot(W3, A2) + b3
+        A3 = relu(Z3)
+
+        # Backward pass
+        dZ3 = A3 - Y
+        dW3 = np.dot(dZ3, A2.T)
+        db3 = dZ3
+
+        dZ2 = np.dot(W3.T, dZ3) * relu_derivative(Z2)
+        dW2 = np.dot(dZ2, A1.T)
+        db2 = dZ2
+
+        dZ1 = np.dot(W2.T, dZ2) * relu_derivative(Z1)
+        dW1 = np.dot(dZ1, X.T)
+        db1 = dZ1
+
+        # Update weights
+        W3 -= learning_rate * dW3
+        b3 -= learning_rate * db3
+        W2 -= learning_rate * dW2
+        b2 -= learning_rate * db2
+        W1 -= learning_rate * dW1
+        b1 -= learning_rate * db1
+
+    print("Final Prediction:", A3)
+    print("Final Weights and Biases:")
+    print("W1:", W1)
+    print("b1:", b1)
+    print("W2:", W2)
+    print("b2:", b2)
+    print("W3:", W3)
+    print("b3:", b3)
+
+if __name__ == "__main__":
+    main()
+
+#sig_N
+import numpy as np
+
+def sigmoid(x):
+    return 1 / (1 + np.exp(-x))
+
+def sigmoid_derivative(x):
+    return sigmoid(x) * (1 - sigmoid(x))
+
+def main():
+    N = int(input("Enter number of inputs: "))
+    X = np.random.randint(0, 2, size=(N, 1))
+    Y = np.random.randint(0, 2, size=(1, 1))  # Expected output
+
+    W1 = np.random.rand(4, N)
+    b1 = np.random.rand(4, 1)
+    W2 = np.random.rand(3, 4)
+    b2 = np.random.rand(3, 1)
+    W3 = np.random.rand(1, 3)
+    b3 = np.random.rand(1, 1)
+
+    learning_rate = 0.1
+
+    for epoch in range(1000):
+        # Forward pass
+        Z1 = np.dot(W1, X) + b1
+        A1 = sigmoid(Z1)
+
+        Z2 = np.dot(W2, A1) + b2
+        A2 = sigmoid(Z2)
+
+        Z3 = np.dot(W3, A2) + b3
+        A3 = sigmoid(Z3)
+
+        # Backward pass
+        dZ3 = A3 - Y
+        dW3 = np.dot(dZ3, A2.T)
+        db3 = dZ3
+
+        dZ2 = np.dot(W3.T, dZ3) * sigmoid_derivative(Z2)
+        dW2 = np.dot(dZ2, A1.T)
+        db2 = dZ2
+
+        dZ1 = np.dot(W2.T, dZ2) * sigmoid_derivative(Z1)
+        dW1 = np.dot(dZ1, X.T)
+        db1 = dZ1
+
+        # Update weights
+        W3 -= learning_rate * dW3
+        b3 -= learning_rate * db3
+        W2 -= learning_rate * dW2
+        b2 -= learning_rate * db2
+        W1 -= learning_rate * dW1
+        b1 -= learning_rate * db1
+
+    print("Final Prediction:", A3)
+    print("Final Weights and Biases:")
+    print("W1:", W1)
+    print("b1:", b1)
+    print("W2:", W2)
+    print("b2:", b2)
+    print("W3:", W3)
+    print("b3:", b3)
+
+if __name__ == "__main__":
+    main()
+
+#4_bin
+import numpy as np
+
+def sigmoid(x):
+    return 1 / (1 + np.exp(-x))
+
+def main():
+    print("Simple MLP with 4 Inputs, 1 Hidden Layer, 2 Outputs")
+
+    # Fixed number of inputs
+    N = 4
+    X = np.random.randint(0, 2, size=(N, 1))
+    print("\nInput X:", X.T)
+
+    # Random initialization
+    W1 = np.random.rand(3, N)    # Hidden layer: 3 neurons
+    b1 = np.random.rand(3, 1)
+
+    W2 = np.random.rand(2, 3)    # Output layer: 2 neurons
+    b2 = np.random.rand(2, 1)
+
+    # One forward pass
+    Z1 = np.dot(W1, X) + b1
+    A1 = sigmoid(Z1)
+    Z2 = np.dot(W2, A1) + b2
+    output = sigmoid(Z2)
+
+    print("\nFinal Output:", output)
+    print("Binary Output (Thresholded):", (output > 0.5).astype(int))
+
+    print("\nFinal Weight Matrices and Bias Values:")
+    print("W1 (Input to Hidden Layer):\n", W1)
+    print("b1 (Hidden Layer Biases):\n", b1)
+    print("W2 (Hidden to Output Layer):\n", W2)
+    print("b2 (Output Layer Biases):\n", b2)
+
+    print("\nNumber of Steps:", 1)
+
+if __name__ == "__main__":
+    main()
+
+#simple_N
+import numpy as np
+
+# Sigmoid activation function
+def sigmoid(x):
+    return 1 / (1 + np.exp(-x))
+
+def main():
+    # Step 1: Read number of inputs
+    N = int(input("Enter number of inputs (N): "))
+    
+    # Step 2: Generate random binary input vector
+    X = np.random.randint(0, 2, size=(N, 1))
+    print("Input X:", X.T)  # Transposed for better viewing
+
+    # Step 3: Initialize random weights and biases
+    W1 = np.random.rand(3, N)    # Weights from input to first hidden layer
+    b1 = np.random.rand(3, 1)    # Biases for first hidden layer
+
+    W2 = np.random.rand(2, 3)    # Weights from first hidden to second hidden layer
+    b2 = np.random.rand(2, 1)    # Biases for second hidden layer
+
+    W3 = np.random.rand(1, 2)    # Weights from second hidden to output layer
+    b3 = np.random.rand(1, 1)    # Bias for output layer
+
+    # Step 4: Forward pass (only one step)
+    Z1 = sigmoid(np.dot(W1, X) + b1)   # First hidden layer output
+    Z2 = sigmoid(np.dot(W2, Z1) + b2)  # Second hidden layer output
+    output = sigmoid(np.dot(W3, Z2) + b3)  # Final output
+
+    # Step 5: Display final outputs
+    print("\nFinal Output:", output)
+    print("\nFinal Weight Matrices and Biases:")
+    print("W1 (Input -> Hidden 1):\n", W1)
+    print("b1 (Bias Hidden 1):\n", b1)
+    print("W2 (Hidden 1 -> Hidden 2):\n", W2)
+    print("b2 (Bias Hidden 2):\n", b2)
+    print("W3 (Hidden 2 -> Output):\n", W3)
+    print("b3 (Bias Output):\n", b3)
+    
+    # Step 6: Number of steps
+    print("\nNumber of steps: 1 (One forward pass)")
+
+if __name__ == "__main__":
+    main()
+
+#token
+import re
+import os
+import nltk
+from nltk.corpus import stopwords
+from nltk.tokenize import word_tokenize
+from textblob import TextBlob
+
+# Download necessary NLTK data
+try:
+    nltk.download('punkt')
+    nltk.download('stopwords')
+    nltk.download('punkt_tab')
+except:
+    print("Note: Make sure you have an internet connection for downloading NLTK resources")
+
+def clean_text(text):
+    text = re.sub(r'[^a-zA-Z\s]', '', text)
+    text = re.sub(r'\s+', ' ', text).strip()
+    return text.lower()
+
+def correct_spelling(tokens):
+    corrected = []
+    for word in tokens:
+        blob = TextBlob(word)
+        corrected.append(str(blob.correct()))
+    return corrected
+
+def main():
+    # Sample text if file not found
+    sample_text = "This is a sample text for tokenization. It contains multiple sentences with various words to process."
+    
+    try:
+        with open('tech1.txt', 'r') as file:
+            text = file.read()
+    except FileNotFoundError:
+        print("Warning: 'tech.txt' not found. Using sample text instead.")
+        text = sample_text
+
+    cleaned_text = clean_text(text)
+    tokens = word_tokenize(cleaned_text)
+    
+    stop_words = set(stopwords.words('english'))
+    tokens = [word for word in tokens if word not in stop_words]
+
+    corrected_tokens = correct_spelling(tokens)
+
+    print("Final Tokens after processing:", corrected_tokens)
+
+if __name__ == "__main__":
+    main()
+
+#stemlem
+import re
+import nltk
+from nltk.tokenize import word_tokenize
+from nltk.corpus import stopwords
+from nltk.stem import PorterStemmer, WordNetLemmatizer
+
+nltk.download('punkt')
+nltk.download('wordnet')
+nltk.download('stopwords')
+
+def clean_text(text):
+    text = re.sub(r'[^a-zA-Z\s]', '', text)
+    text = re.sub(r'\s+', ' ', text).strip()
+    return text.lower()
+
+def main():
+    with open('textfile.txt', 'r') as file:
+        text = file.read()
+
+    cleaned_text = clean_text(text)
+    tokens = word_tokenize(cleaned_text)
+
+    ps = PorterStemmer()
+    lemmatizer = WordNetLemmatizer()
+
+    stemmed = [ps.stem(word) for word in tokens]
+    lemmatized = [lemmatizer.lemmatize(word) for word in stemmed]
+
+    triplets = [lemmatized[i:i+3] for i in range(len(lemmatized)-2)]
+
+    print("Triplets after lemmatization:", triplets)
+
+if __name__ == "__main__":
+    main()
+
+#one-hot
+from sklearn.preprocessing import OneHotEncoder
+import pandas as pd
+
+def main():
+    docs = []
+    for i in range(1, 4):
+        with open(f'tech{i}.txt', 'r') as file:
+            docs.append(file.read())
+
+    all_text = ' '.join(docs).lower().split()
+
+    unique_words = list(set(all_text))
+    df = pd.DataFrame(unique_words, columns=['Word'])
+
+    encoder = OneHotEncoder(sparse_output=False)
+    one_hot = encoder.fit_transform(df[['Word']])
+
+    one_hot_df = pd.DataFrame(one_hot, columns=encoder.get_feature_names_out(['Word']))
+    print(one_hot_df)
+
+if __name__ == "__main__":
+    main()
+
+#bagofwords
+
+from sklearn.feature_extraction.text import CountVectorizer
+
+def main():
+    docs = []
+    for i in range(1, 4):
+        with open(f'movie{i}.txt', 'r') as file:
+            docs.append(file.read())
+
+    vectorizer = CountVectorizer()
+    X = vectorizer.fit_transform(docs)
+
+    print("Vocabulary:", vectorizer.get_feature_names_out())
+    print("Bag of Words Matrix:\n", X.toarray())
+
+if __name__ == "__main__":
+    main()
+
+#tf-idf
+from sklearn.feature_extraction.text import TfidfVectorizer
+
+def main():
+    docs = []
+    for i in range(1, 4):
+        with open(f'tourist{i}.txt', 'r') as file:
+            docs.append(file.read())
+
+    vectorizer = TfidfVectorizer()
+    X = vectorizer.fit_transform(docs)
+
+    print("Vocabulary:", vectorizer.get_feature_names_out())
+    print("TF-IDF Matrix:\n", X.toarray())
+
+if __name__ == "__main__":
+    main()

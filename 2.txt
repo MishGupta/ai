@@ -1,0 +1,200 @@
+def union(set1, set2):
+    return {key: max(set1.get(key, 0), set2.get(key, 0)) for key in set(set1) | set(set2)}
+
+def intersection(set1, set2):
+    return {key: min(set1.get(key, 0), set2.get(key, 0)) for key in set(set1) & set(set2)}
+
+def complement(fuzzy_set):
+    return {key: 1 - value for key, value in fuzzy_set.items()}
+
+def main():
+    fuzzy1 = {'a': 0.2, 'b': 0.5, 'c': 0.7}
+    fuzzy2 = {'a': 0.4, 'b': 0.6, 'c': 0.3}
+    fuzzy3 = {'a': 0.8, 'b': 0.1, 'c': 0.5}
+
+    print("Union of fuzzy1 and fuzzy2:", union(fuzzy1, fuzzy2))
+    print("Intersection of fuzzy1 and fuzzy2:", intersection(fuzzy1, fuzzy2))
+    print("Complement of fuzzy1:", complement(fuzzy1))
+    print("Complement of fuzzy2:", complement(fuzzy2))
+    print("Complement of fuzzy3:", complement(fuzzy3))
+
+if __name__ == "__main__":
+    main()
+
+#f_ci
+def intersection(set1, set2):
+    return {key: min(set1.get(key, 0), set2.get(key, 0)) for key in set(set1) & set(set2)}
+
+def complement(fuzzy_set):
+    return {key: 1 - value for key, value in fuzzy_set.items()}
+
+def main():
+    fuzzy1 = {'a': 0.5, 'b': 0.7}
+    fuzzy2 = {'a': 0.6, 'b': 0.2}
+
+    intersection_set = intersection(fuzzy1, fuzzy2)
+    complement_intersection = complement(intersection_set)
+
+    complement_fuzzy1 = complement(fuzzy1)
+    complement_fuzzy2 = complement(fuzzy2)
+    union_complements = {key: max(complement_fuzzy1.get(key, 0), complement_fuzzy2.get(key, 0)) for key in complement_fuzzy1}
+
+    print("Complement of Intersection:", complement_intersection)
+    print("Union of Complements:", union_complements)
+
+if __name__ == "__main__":
+    main()
+
+#f_cu
+def union(set1, set2):
+    return {key: max(set1.get(key, 0), set2.get(key, 0)) for key in set(set1) | set(set2)}
+
+def complement(fuzzy_set):
+    return {key: 1 - value for key, value in fuzzy_set.items()}
+
+def main():
+    fuzzy1 = {'a': 0.5, 'b': 0.7}
+    fuzzy2 = {'a': 0.6, 'b': 0.2}
+
+    union_set = union(fuzzy1, fuzzy2)
+    complement_union = complement(union_set)
+
+    complement_fuzzy1 = complement(fuzzy1)
+    complement_fuzzy2 = complement(fuzzy2)
+    intersection_complements = {key: min(complement_fuzzy1.get(key, 0), complement_fuzzy2.get(key, 0)) for key in complement_fuzzy1}
+
+    print("Complement of Union:", complement_union)
+    print("Intersection of Complements:", intersection_complements)
+
+if __name__ == "__main__":
+    main()
+
+#nim_loss
+def minimax(stones, is_computer_turn):
+    if stones == 0:
+        return 1 if not is_computer_turn else -1
+
+    if is_computer_turn:
+        best_score = float('inf')  # <-- NOTE: minimized instead of maximized
+        for move in [1, 2, 3]:
+            if stones >= move:
+                score = minimax(stones - move, False)
+                best_score = min(best_score, score)
+        return best_score
+    else:
+        best_score = -float('inf')  # player plays optimally (maximize)
+        for move in [1, 2, 3]:
+            if stones >= move:
+                score = minimax(stones - move, True)
+                best_score = max(best_score, score)
+        return best_score
+
+def worst_move(stones):
+    worst_score = float('inf')
+    move_chosen = 1
+    for move in [1, 2, 3]:
+        if stones >= move:
+            score = minimax(stones - move, False)
+            if score < worst_score:
+                worst_score = score
+                move_chosen = move
+    return move_chosen
+
+def play_nim():
+    stones = int(input("Enter initial number of stones (>= 1): "))
+    turn = input("Who plays first? (computer/player): ").strip().lower()
+
+    if turn not in ["computer", "player"]:
+        print("Invalid choice.")
+        return
+
+    is_computer_turn = (turn == "computer")
+
+    while stones > 0:
+        print(f"\nStones left: {stones}")
+
+        if is_computer_turn:
+            move = worst_move(stones)
+            print(f"Computer removes {move} stone(s).")
+        else:
+            move = int(input("How many stones do you want to remove (1-3)? "))
+            if move not in [1, 2, 3] or move > stones:
+                print("Invalid move. Try again.")
+                continue
+
+        stones -= move
+        is_computer_turn = not is_computer_turn
+
+    if not is_computer_turn:
+        print("\nComputer wins!")
+    else:
+        print("\nYou win!")
+
+if __name__ == "__main__":
+    play_nim()
+
+#nim_win
+def minimax(stones, is_computer_turn):
+    # Base cases
+    if stones == 0:
+        # If no stones left, the last player to move wins
+        return 1 if not is_computer_turn else -1
+
+    if is_computer_turn:
+        best_score = -float('inf')
+        for move in [1, 2, 3]:
+            if stones >= move:
+                score = minimax(stones - move, False)
+                best_score = max(best_score, score)
+        return best_score
+    else:
+        best_score = float('inf')
+        for move in [1, 2, 3]:
+            if stones >= move:
+                score = minimax(stones - move, True)
+                best_score = min(best_score, score)
+        return best_score
+
+def best_move(stones):
+    best_score = -float('inf')
+    move_chosen = 1
+    for move in [1, 2, 3]:
+        if stones >= move:
+            score = minimax(stones - move, False)
+            if score > best_score:
+                best_score = score
+                move_chosen = move
+    return move_chosen
+
+def play_nim():
+    stones = int(input("Enter initial number of stones (>= 1): "))
+    turn = input("Who plays first? (computer/player): ").strip().lower()
+
+    if turn not in ["computer", "player"]:
+        print("Invalid choice.")
+        return
+
+    is_computer_turn = (turn == "computer")
+
+    while stones > 0:
+        print(f"\nStones left: {stones}")
+
+        if is_computer_turn:
+            move = best_move(stones)
+            print(f"Computer removes {move} stone(s).")
+        else:
+            move = int(input("How many stones do you want to remove (1-3)? "))
+            if move not in [1, 2, 3] or move > stones:
+                print("Invalid move. Try again.")
+                continue
+
+        stones -= move
+        is_computer_turn = not is_computer_turn
+
+    if not is_computer_turn:
+        print("\nComputer wins!")
+    else:
+        print("\nYou win!")
+
+if __name__ == "__main__":
+    play_nim()

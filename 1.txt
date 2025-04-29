@@ -1,0 +1,472 @@
+import pandas as pd
+
+def dfs_recursive(graph, node, visited):
+    if node not in visited:
+        print(node, end=" ")
+        visited.add(node)
+        for neighbor in graph[node]:
+            dfs_recursive(graph, neighbor, visited)
+
+def read_graph_from_csv(file_path):
+    df = pd.read_csv(file_path)
+    graph = {}
+    for _, row in df.iterrows():
+        src, dest = row['Source'], row['Destination']
+        graph.setdefault(src, []).append(dest)
+        graph.setdefault(dest, []).append(src)
+    return graph
+
+def main():
+    file_path = 'graph.csv'  # Change this path if needed
+    graph = read_graph_from_csv(file_path)
+    start_node = input("Enter the starting node: ")
+    visited = set()
+    print("DFS Traversal:")
+    dfs_recursive(graph, start_node, visited)
+
+if __name__ == "__main__":
+    main()
+
+
+def dfs_non_recursive(graph, start):
+    visited = set()
+    stack = [start]
+    
+    while stack:
+        node = stack.pop()
+        if node not in visited:
+            print(node, end=" ")
+            visited.add(node)
+            stack.extend(reversed(graph[node]))  # reverse for correct order
+
+def create_graph():
+    graph = {}
+    n = int(input("Enter number of edges: "))
+    for _ in range(n):
+        u, v = input("Enter edge (u v): ").split()
+        graph.setdefault(u, []).append(v)
+        graph.setdefault(v, []).append(u)
+    return graph
+
+def main():
+    graph = create_graph()
+    start_node = input("Enter the starting node: ")
+    print("DFS Traversal:")
+    dfs_non_recursive(graph, start_node)
+
+if __name__ == "__main__":
+    main()
+
+from collections import deque
+
+def bfs(graph, start):
+    visited = set()
+    queue = deque([start])
+
+    while queue:
+        node = queue.popleft()
+        if node not in visited:
+            print(node, end=" ")
+            visited.add(node)
+            queue.extend(graph[node])
+
+def create_graph():
+    graph = {}
+    n = int(input("Enter number of edges: "))
+    for _ in range(n):
+        u, v = input("Enter edge (u v): ").split()
+        graph.setdefault(u, []).append(v)
+        graph.setdefault(v, []).append(u)
+    return graph
+
+def main():
+    graph = create_graph()
+    start_node = input("Enter the starting node: ")
+    print("BFS Traversal:")
+    bfs(graph, start_node)
+
+if __name__ == "__main__":
+    main()
+
+
+#best_f_d
+import heapq
+
+def best_first_search(graph, heuristics, start, goal):
+    visited = set()
+    heap = [(heuristics[start], start)]
+
+    while heap:
+        cost, node = heapq.heappop(heap)
+        if node in visited:
+            continue
+        print(node, end=" ")
+        visited.add(node)
+
+        if node == goal:
+            print("\nGoal found!")
+            return
+
+        for neighbor in graph.get(node, []):
+            if neighbor not in visited:
+                heapq.heappush(heap, (heuristics[neighbor], neighbor))
+    print("\nGoal not found.")
+
+def create_graph_and_heuristics():
+    graph = {}
+    heuristics = {}
+    n = int(input("Enter number of edges: "))
+    for _ in range(n):
+        u, v = input("Enter edge (u v): ").split()
+        graph.setdefault(u, []).append(v)
+    m = int(input("Enter number of nodes for heuristics: "))
+    for _ in range(m):
+        node, h = input("Enter node and heuristic (node h): ").split()
+        heuristics[node] = int(h)
+    return graph, heuristics
+
+def main():
+    graph, heuristics = create_graph_and_heuristics()
+    start = input("Enter start node: ")
+    goal = input("Enter goal node: ")
+    best_first_search(graph, heuristics, start, goal)
+
+if __name__ == "__main__":
+    main()
+
+#best_f_und
+import heapq
+
+def best_first_search(graph, heuristics, start, goal):
+    visited = set()
+    heap = [(heuristics[start], start)]
+
+    while heap:
+        cost, node = heapq.heappop(heap)
+        if node in visited:
+            continue
+        print(node, end=" ")
+        visited.add(node)
+
+        if node == goal:
+            print("\nGoal found!")
+            return
+
+        for neighbor, weight in graph.get(node, []):
+            if neighbor not in visited:
+                heapq.heappush(heap, (heuristics[neighbor], neighbor))
+    print("\nGoal not found.")
+
+def create_graph_and_heuristics():
+    graph = {}
+    heuristics = {}
+    n = int(input("Enter number of edges: "))
+    for _ in range(n):
+        u, v, w = input("Enter edge (u v weight): ").split()
+        w = int(w)
+        graph.setdefault(u, []).append((v, w))
+        graph.setdefault(v, []).append((u, w))
+    m = int(input("Enter number of nodes for heuristics: "))
+    for _ in range(m):
+        node, h = input("Enter node and heuristic (node h): ").split()
+        heuristics[node] = int(h)
+    return graph, heuristics
+
+def main():
+    graph, heuristics = create_graph_and_heuristics()
+    start = input("Enter start node: ")
+    goal = input("Enter goal node: ")
+    best_first_search(graph, heuristics, start, goal)
+
+if __name__ == "__main__":
+    main()
+
+#best_f_und_unw
+import heapq
+
+def best_first_search(graph, heuristics, start, goal):
+    visited = set()
+    heap = [(heuristics[start], start)]
+
+    while heap:
+        cost, node = heapq.heappop(heap)
+        if node in visited:
+            continue
+        print(node, end=" ")
+        visited.add(node)
+
+        if node == goal:
+            print("\nGoal found!")
+            return
+
+        for neighbor in graph.get(node, []):
+            if neighbor not in visited:
+                heapq.heappush(heap, (heuristics[neighbor], neighbor))
+    print("\nGoal not found.")
+
+def create_graph_and_heuristics():
+    graph = {}
+    heuristics = {}
+    n = int(input("Enter number of edges: "))
+    for _ in range(n):
+        u, v = input("Enter edge (u v): ").split()
+        graph.setdefault(u, []).append(v)
+        graph.setdefault(v, []).append(u)
+    m = int(input("Enter number of nodes for heuristics: "))
+    for _ in range(m):
+        node, h = input("Enter node and heuristic (node h): ").split()
+        heuristics[node] = int(h)
+    return graph, heuristics
+
+def main():
+    graph, heuristics = create_graph_and_heuristics()
+    start = input("Enter start node: ")
+    goal = input("Enter goal node: ")
+    best_first_search(graph, heuristics, start, goal)
+
+if __name__ == "__main__":
+    main()
+
+#best_d_w
+import heapq
+
+def best_first_search(graph, heuristics, start, goal):
+    visited = set()
+    heap = [(heuristics[start], start)]
+
+    while heap:
+        cost, node = heapq.heappop(heap)
+        if node in visited:
+            continue
+        print(node, end=" ")
+        visited.add(node)
+
+        if node == goal:
+            print("\nGoal found!")
+            return
+
+        for neighbor, weight in graph.get(node, []):
+            if neighbor not in visited:
+                heapq.heappush(heap, (heuristics[neighbor], neighbor))
+    print("\nGoal not found.")
+
+def create_graph_and_heuristics():
+    graph = {}
+    heuristics = {}
+    n = int(input("Enter number of edges: "))
+    for _ in range(n):
+        u, v, w = input("Enter edge (u v weight): ").split()
+        w = int(w)
+        graph.setdefault(u, []).append((v, w))  # directed graph
+    m = int(input("Enter number of nodes for heuristics: "))
+    for _ in range(m):
+        node, h = input("Enter node and heuristic (node h): ").split()
+        heuristics[node] = int(h)
+    return graph, heuristics
+
+def main():
+    graph, heuristics = create_graph_and_heuristics()
+    start = input("Enter start node: ")
+    goal = input("Enter goal node: ")
+    best_first_search(graph, heuristics, start, goal)
+
+if __name__ == "__main__":
+    main()
+
+#a*_csv_dir
+import pandas as pd
+import heapq
+
+def read_graph_and_heuristic_from_csv(graph_file, heuristic_file):
+    graph = {}
+    heuristics = {}
+    
+    graph_df = pd.read_csv(graph_file)
+    heuristic_df = pd.read_csv(heuristic_file)
+    
+    for _, row in graph_df.iterrows():
+        src, dest, weight = row['Source'], row['Destination'], row['Weight']
+        graph.setdefault(src, []).append((dest, weight))
+    
+    for _, row in heuristic_df.iterrows():
+        node, h = row['Node'], row['Heuristic']
+        heuristics[node] = h
+        
+    return graph, heuristics
+
+def a_star(graph, heuristics, start, goal):
+    open_set = [(heuristics[start], 0, start)]
+    visited = set()
+
+    while open_set:
+        est_total, cost_so_far, node = heapq.heappop(open_set)
+        if node == goal:
+            print(f"Reached {goal} with total cost {cost_so_far}")
+            return
+
+        visited.add(node)
+        print(node, end=" ")
+
+        for neighbor, weight in graph.get(node, []):
+            if neighbor not in visited:
+                g = cost_so_far + weight
+                f = g + heuristics.get(neighbor, float('inf'))
+                heapq.heappush(open_set, (f, g, neighbor))
+    print("\nGoal not reachable.")
+
+def main():
+    graph_file = 'graph.csv'
+    heuristic_file = 'heuristic.csv'
+    graph, heuristics = read_graph_and_heuristic_from_csv(graph_file, heuristic_file)
+    start = input("Enter start node: ")
+    goal = input("Enter goal node: ")
+    a_star(graph, heuristics, start, goal)
+
+if __name__ == "__main__":
+    main()
+
+#a*_und_csv
+import pandas as pd
+import heapq
+
+def read_graph_and_heuristic_from_csv(graph_file, heuristic_file):
+    graph = {}
+    heuristics = {}
+    
+    graph_df = pd.read_csv(graph_file)
+    heuristic_df = pd.read_csv(heuristic_file)
+    
+    for _, row in graph_df.iterrows():
+        src, dest, weight = row['Source'], row['Destination'], row['Weight']
+        graph.setdefault(src, []).append((dest, weight))
+        graph.setdefault(dest, []).append((src, weight))  # undirected
+    
+    for _, row in heuristic_df.iterrows():
+        node, h = row['Node'], row['Heuristic']
+        heuristics[node] = h
+        
+    return graph, heuristics
+
+def a_star(graph, heuristics, start, goal):
+    open_set = [(heuristics[start], 0, start)]
+    visited = set()
+
+    while open_set:
+        est_total, cost_so_far, node = heapq.heappop(open_set)
+        if node == goal:
+            print(f"Reached {goal} with total cost {cost_so_far}")
+            return
+
+        visited.add(node)
+        print(node, end=" ")
+
+        for neighbor, weight in graph.get(node, []):
+            if neighbor not in visited:
+                g = cost_so_far + weight
+                f = g + heuristics.get(neighbor, float('inf'))
+                heapq.heappush(open_set, (f, g, neighbor))
+    print("\nGoal not reachable.")
+
+def main():
+    graph_file = 'graph.csv'
+    heuristic_file = 'heuristic.csv'
+    graph, heuristics = read_graph_and_heuristic_from_csv(graph_file, heuristic_file)
+    start = input("Enter start node: ")
+    goal = input("Enter goal node: ")
+    a_star(graph, heuristics, start, goal)
+
+if __name__ == "__main__":
+    main()
+
+#a*_dir_user
+import heapq
+
+def a_star(graph, heuristics, start, goal):
+    open_set = [(heuristics[start], 0, start)]
+    visited = set()
+
+    while open_set:
+        est_total, cost_so_far, node = heapq.heappop(open_set)
+        if node == goal:
+            print(f"Reached {goal} with total cost {cost_so_far}")
+            return
+
+        visited.add(node)
+        print(node, end=" ")
+
+        for neighbor, weight in graph.get(node, []):
+            if neighbor not in visited:
+                g = cost_so_far + weight
+                f = g + heuristics.get(neighbor, float('inf'))
+                heapq.heappush(open_set, (f, g, neighbor))
+    print("\nGoal not reachable.")
+
+def create_graph_and_heuristics():
+    graph = {}
+    heuristics = {}
+    n = int(input("Enter number of edges: "))
+    for _ in range(n):
+        u, v, w = input("Enter edge (u v weight): ").split()
+        w = int(w)
+        graph.setdefault(u, []).append((v, w))
+    m = int(input("Enter number of nodes for heuristics: "))
+    for _ in range(m):
+        node, h = input("Enter node and heuristic (node h): ").split()
+        heuristics[node] = int(h)
+    return graph, heuristics
+
+def main():
+    graph, heuristics = create_graph_and_heuristics()
+    start = input("Enter start node: ")
+    goal = input("Enter goal node: ")
+    a_star(graph, heuristics, start, goal)
+
+if __name__ == "__main__":
+    main()
+
+#a*_und_user
+import heapq
+
+def a_star(graph, heuristics, start, goal):
+    open_set = [(heuristics[start], 0, start)]
+    visited = set()
+
+    while open_set:
+        est_total, cost_so_far, node = heapq.heappop(open_set)
+        if node == goal:
+            print(f"Reached {goal} with total cost {cost_so_far}")
+            return
+
+        visited.add(node)
+        print(node, end=" ")
+
+        for neighbor, weight in graph.get(node, []):
+            if neighbor not in visited:
+                g = cost_so_far + weight
+                f = g + heuristics.get(neighbor, float('inf'))
+                heapq.heappush(open_set, (f, g, neighbor))
+    print("\nGoal not reachable.")
+
+def create_graph_and_heuristics():
+    graph = {}
+    heuristics = {}
+    n = int(input("Enter number of edges: "))
+    for _ in range(n):
+        u, v, w = input("Enter edge (u v weight): ").split()
+        w = int(w)
+        graph.setdefault(u, []).append((v, w))
+        graph.setdefault(v, []).append((u, w))  # undirected
+    m = int(input("Enter number of nodes for heuristics: "))
+    for _ in range(m):
+        node, h = input("Enter node and heuristic (node h): ").split()
+        heuristics[node] = int(h)
+    return graph, heuristics
+
+def main():
+    graph, heuristics = create_graph_and_heuristics()
+    start = input("Enter start node: ")
+    goal = input("Enter goal node: ")
+    a_star(graph, heuristics, start, goal)
+
+if __name__ == "__main__":
+    main()
